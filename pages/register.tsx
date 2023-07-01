@@ -1,40 +1,11 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import toast, { Toaster } from 'react-hot-toast';
-declare const window: any;
-export default function Home() {
-  const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = async (e:any) => {
-    e.preventDefault();
-    if (username.length < 6 || password.length < 6) {
-      toast.error("Please enter a username and password with at least 6 characters")
-      return;
-    }
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      router.push("/store")
-      } else if (res.status === 403) { // change this status later to not-registered status
-        router.push("/register")
-      }
-      else{
-        toast.error("Incorrect username or password")
-      }
-    };
-  
-
-  return (
-    <main>
+export default function Home(){
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    return(
+        <main>
       <div
         className="hero min-h-screen"
         style={{
@@ -46,12 +17,9 @@ export default function Home() {
         <div className="hero-content text-center text-neutral-content">
           <div className="max-w-md">
             <h1 className="mb-5 text-5xl font-bold">esness</h1>
-            <p className="mb-5">/ Sign in to get access. /</p>
+            <p className="mb-5">/ Register /</p>
             
-            
-                <form className=""
-                onSubmit={handleSubmit}
-                >
+                <form className="">
                   <label className="label">
                     <span className="label-text text-slate-700">Username</span>
                   </label>
@@ -75,22 +43,21 @@ export default function Home() {
                     required
                   />
                   <div>
-                  <button
-                  className="btn btn-ghost my-2"
+                    <button
+                  className="btn btn-ghost"
                   type="submit"
                 >
-                  sign-in
+                  Register
                 </button>
                   </div>
                   
 
                   
                 </form>
-                <Link href="/register" className="btn  my-2">Register</Link>
-          </div>
+                
         </div>
       </div>
-
+      </div>
     </main>
-  );
+    )
 }
