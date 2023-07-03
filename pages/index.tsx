@@ -3,35 +3,48 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
+import jwt from "jsonwebtoken";
+import { useStateContext } from "@/context/StateContext";
 declare const window: any;
 export default function Home() {
+  const { setToken } = useStateContext();
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (e:any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if (username.length < 6 || password.length < 6) {
-      toast.error("Please enter a username and password with at least 6 characters")
+
+    if (username.length < 4 || password.length < 4) {
+      toast.error(
+        "Please enter a username and password with at least 4 characters"
+      );
       return;
     }
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      router.push("/store")
-      } else if (res.status === 403) { // change this status later to not-registered status
-        router.push("/register")
+    try {
+      const res = await fetch(
+        process.env.NEXT_PUBLIC_API_URL + "/users/sign-in",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        }
+      );
+      const data = await res.json();
+      if (res.ok && data.body) {
+        setToken(data.body);
+        router.push("/store");
+      } else {
+        //I coudlnt figure out how to get CORS to work with custom HTTP codes...
+        toast.error("Already Registered");
       }
-      else{
-        toast.error("Incorrect username or password")
-      }
-    };
-  
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <main>
@@ -45,52 +58,48 @@ export default function Home() {
         <div className="hero-overlay bg-opacity-60"></div>
         <div className="hero-content text-center text-neutral-content">
           <div className="max-w-md">
-            <h1 className="mb-5 text-5xl font-bold">esness</h1>
-            <p className="mb-5">/ Sign in to get access. /</p>
-            
-            
-                <form className=""
-                onSubmit={handleSubmit}
-                >
-                  <label className="label">
-                    <span className="label-text text-slate-700">Username</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="username"
-                    className="input input-bordered"
-                    value = {username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                  />
-                  <label className="label">
-                    <span className="label-text text-slate-700">Password</span>
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="password"
-                    className="input input-bordered"
-                    value = {password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                  <div>
-                  <button
-                  className="btn btn-ghost my-2"
-                  type="submit"
-                >
+            <h1 className="mb-5 text-5xl font-bold">TREE STORE</h1>
+            <p className="mb-5">/ Sign-in /</p>
+
+            <form className="" onSubmit={handleSubmit}>
+              <label className="label px-10">
+                <span className="label-text text-slate-700">Username</span>
+              </label>
+              <input
+                type="text"
+                placeholder="username"
+                className="input input-bordered"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+              <label className="label px-10">
+                <span className="label-text text-slate-700">Password</span>
+              </label>
+              <input
+                type="password"
+                placeholder="password"
+                className="input input-bordered"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <div>
+                <button className="btn btn-outline btn-md my-2" type="submit">
                   sign-in
                 </button>
-                  </div>
-                  
-
-                  
-                </form>
-                <Link href="/register" className="btn  my-2">Register</Link>
+              </div>
+            </form>
+            <p>
+              Don&apos;t have an account?
+              <Link href="/register" className=" underline">
+                {" "}
+                Register
+              </Link>
+            </p>
           </div>
         </div>
       </div>
-
     </main>
   );
 }

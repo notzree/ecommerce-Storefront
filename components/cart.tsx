@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { useEffect } from "react";
 import {
   AiOutlineLeft,
   AiOutlineMinus,
@@ -9,8 +9,20 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { useStateContext } from "../context/StateContext";
 import { useRef } from "react";
 import { toast } from "react-hot-toast";
-
+import jwt from "jsonwebtoken";
+import { useRouter } from "next/router";
+interface Token {
+  username: string;
+  iat: number;
+  exp: number;
+}
 export default function Cart() {
+  useEffect(() => {
+    if (!token) {
+      router.push("/");
+    }
+  }, []);
+  const router = useRouter();
   const cartRef = useRef<HTMLDivElement | null>(null);
   const {
     totalPrice,
@@ -22,19 +34,41 @@ export default function Cart() {
     qty,
     deleteProduct,
     toggleCartItemQuantity,
+    token,
   } = useStateContext();
 
-  const handleCheckout = async () => {
-    // Checkout logic goes here
+  const handleCheckout = async (e: any) => {
+    e.preventDefault();
+    
+    const temp = JSON.stringify({
+      user: token,
+      cartItems: cartItems,
+    })
+    console.log(temp);
+    const response = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + "/orders/add-order",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user: token,
+          cartItems: cartItems,
+        }),
+      }
+    );
+
+    console.log(response);
   };
-console.log(cartItems)
   return (
     <div
-      className="w-96 bg-base-100 h-screen float-right fixed top-0 right-0 z-40"
+      className="w-96 bg-base-100 h-screen float-right fixed top-0 right-0 z-40 overflow-y-scroll"
       ref={cartRef}
     >
       <div className="">
-        <button className=" ml-2 btn" onClick={() => setShowCart(false)}>
+        <button
+          className=" ml-2 btn btn-outline"
+          onClick={() => setShowCart(false)}
+        >
           <AiOutlineLeft />
           <span>Your Cart</span>{" "}
           <span className=" text-red-400">
@@ -57,7 +91,6 @@ console.log(cartItems)
         <div>
           {cartItems.length >= 1 &&
             cartItems.map((item) => {
-                
               return (
                 <div className="flex  my-2" key={item.id}>
                   <div className="w-40 m-4">
@@ -71,9 +104,7 @@ console.log(cartItems)
                     <div className="btn-group py-2">
                       <button
                         className="btn btn-xs py-2  px-2 "
-                        onClick={() =>
-                          toggleCartItemQuantity(item.id, "dec")
-                        }
+                        onClick={() => toggleCartItemQuantity(item.id, "dec")}
                       >
                         -
                       </button>
@@ -82,9 +113,7 @@ console.log(cartItems)
                       </p>
                       <button
                         className="btn btn-xs px-2"
-                        onClick={() =>
-                          toggleCartItemQuantity(item.id, "inc")
-                        }
+                        onClick={() => toggleCartItemQuantity(item.id, "inc")}
                       >
                         +
                       </button>
@@ -110,7 +139,7 @@ console.log(cartItems)
             </div>
             <div className="flex items-center justify-center">
               <button className="btn btn-info" onClick={handleCheckout}>
-                Checkout 
+                Checkout
               </button>
             </div>
           </div>

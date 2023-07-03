@@ -6,7 +6,7 @@ const {url,name,description,price} = product.product
 const {onAdd} = useStateContext()
 
     return(
-        <div className="card w-[120em] bg-base-100 shadow-xl m-5">
+        <div className="card w-52 bg-base-100 shadow-xl m-5">
 { /* eslint-disable-next-line @next/next/no-img-element */}
   <figure><img src={url} alt="trees" /></figure>
   <div className="card-body">

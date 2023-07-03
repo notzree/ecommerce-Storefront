@@ -1,9 +1,43 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import toast, { Toaster } from "react-hot-toast";
+
 export default function Home(){
+    const router = useRouter();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const handleSubmit = async (e: any) => {
+      e.preventDefault();
+  
+      if (username.length < 4 || password.length < 4) {
+        toast.error(
+          "Please enter a username and password with at least 4 characters"
+        );
+        return;
+      }
+      try {
+        const res = await fetch(
+          process.env.NEXT_PUBLIC_API_URL + "/users/register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+          }
+        );
+        const data = await res.json();
+        if (res.ok && data.body) {
+          router.push("/");
+        } else {
+          //I coudlnt figure out how to get CORS to work with custom HTTP codes...
+          toast.error("Something went wrong!");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
     return(
         <main>
       <div
@@ -16,11 +50,11 @@ export default function Home(){
         <div className="hero-overlay bg-opacity-60"></div>
         <div className="hero-content text-center text-neutral-content">
           <div className="max-w-md">
-            <h1 className="mb-5 text-5xl font-bold">esness</h1>
+            <h1 className="mb-5 text-5xl font-bold">TREE STORE</h1>
             <p className="mb-5">/ Register /</p>
             
-                <form className="">
-                  <label className="label">
+                <form className="" onSubmit={handleSubmit}>
+                  <label className="label px-10 ">
                     <span className="label-text text-slate-700">Username</span>
                   </label>
                   <input
@@ -31,7 +65,7 @@ export default function Home(){
                     onChange={(e) => setUsername(e.target.value)}
                     required
                   />
-                  <label className="label">
+                  <label className="label px-10">
                     <span className="label-text text-slate-700">Password</span>
                   </label>
                   <input
@@ -44,16 +78,16 @@ export default function Home(){
                   />
                   <div>
                     <button
-                  className="btn btn-ghost"
+                  className="btn btn-outline my-2"
                   type="submit"
                 >
                   Register
                 </button>
                   </div>
-                  
-
-                  
                 </form>
+                <p>Already have an account?
+                  <Link href="/" className=" underline"> Login</Link>
+                </p>
                 
         </div>
       </div>

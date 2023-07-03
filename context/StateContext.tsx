@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { toast } from "react-hot-toast";
 
 interface Product {
@@ -7,7 +13,6 @@ interface Product {
   price: number;
   quantity: number;
   url: string;
-
 }
 
 interface StateContextProps {
@@ -22,6 +27,8 @@ interface StateContextProps {
   onAdd: (product: Product, quantity: number) => void;
   deleteProduct: (product: Product) => void;
   toggleCartItemQuantity: (id: string, values: "inc" | "dec") => void;
+  token: string;
+  setToken: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Context = createContext<StateContextProps | undefined>(undefined);
@@ -36,7 +43,7 @@ export const StateContext = ({ children }: StateContextProviderProps) => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [totalQuantities, setTotalQuantities] = useState<number>(0);
   const [qty, setQty] = useState<number>(1);
-
+  const [token, setToken] = useState<string>("");
   let foundProduct: Product | undefined;
   let index: number;
 
@@ -130,6 +137,8 @@ export const StateContext = ({ children }: StateContextProviderProps) => {
         onAdd,
         deleteProduct,
         toggleCartItemQuantity,
+        token,
+        setToken,
       }}
     >
       {children}
@@ -140,7 +149,9 @@ export const StateContext = ({ children }: StateContextProviderProps) => {
 export const useStateContext = (): StateContextProps => {
   const context = useContext(Context);
   if (context === undefined) {
-    throw new Error("useStateContext must be used within a StateContextProvider");
+    throw new Error(
+      "useStateContext must be used within a StateContextProvider"
+    );
   }
   return context;
 };
