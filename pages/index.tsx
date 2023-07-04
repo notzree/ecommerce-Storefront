@@ -81,6 +81,7 @@ export default function Home() {
                 Register
               </Link>
             </p>
+            <p className="my-2">Check out the repository: <a href="https://github.com/notzree/ecommerce-Storefront" className="underline">frontend</a>, <a href="https://github.com/notzree/jitto_lambda_functions" className="underline">backend</a></p>
           </div>
         </div>
       </div>
