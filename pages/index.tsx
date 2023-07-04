@@ -4,8 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";
-import jwt from "jsonwebtoken";
-import { useStateContext } from "@/context/StateContext";
+
 import { useLogin } from "@/hooks/useLogin";
 declare const window: any;
 export default function Home() {

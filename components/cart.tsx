@@ -44,7 +44,6 @@ export default function Cart() {
       const currUser = JSON.parse(temp as string) as User;
       const token = currUser.accessToken;
     
-  
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_URL + "/orders/add-order",
       {
@@ -53,6 +52,7 @@ export default function Cart() {
         body: JSON.stringify({
           user: token,
           cartItems: cartItems,
+          totalPrice: totalPrice,
         }),
       }
     ).then((res) => res.json())

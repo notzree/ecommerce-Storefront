@@ -13,7 +13,6 @@ export default function Order() {
       temp = temp?.substring(1, temp.length - 1);
       const currUser = JSON.parse(temp as string) as User;
       const token = currUser.accessToken;
-      console.log(token);
             const res = await fetch(process.env.NEXT_PUBLIC_API_URL + "/orders/get-orders",{
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -23,7 +22,6 @@ export default function Order() {
           });
            var orders = await res.json();
           orders = orders.body.Items
-          console.log(orders);
           setOrders(orders);
         }
        fetchData();
