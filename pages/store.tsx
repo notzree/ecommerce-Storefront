@@ -6,9 +6,10 @@ import Card from "@/components/card"
 import Cart from "@/components/cart"
 import { useStateContext } from "@/context/StateContext"
 import Link from "next/link"
+import { useLogout } from "@/hooks/useLogout"
 export default function Store(){
+    const {logout } = useLogout()
     const { showCart, setShowCart, totalQuantities } = useStateContext();
-
     return (
         <main>
         <div    
@@ -20,13 +21,15 @@ export default function Store(){
         >
         <div className="hero-overlay bg-opacity-60"></div>
         <div className="hero-content text-center text-neutral-content w-screen">
-            <div className="max-w-md">
+            <div className="max-w-md flex flex-col justify-center items-center">
             <h1 className="mb-5 text-5xl font-bold">TREE STORE</h1>
             <p className="mb-5">/ Store /</p>
-            <Link href="/orders" className="btn-outline btn">View my orders</Link>
+            <button className="btn btn-outline w-28" onClick={()=>setShowCart(!showCart)}>Cart</button>
+            <Link href="/orders" className="btn-outline btn w-28 my-5">View my orders</Link>
+            <button className = "btn btn-outline  w-28" onClick={()=>logout()}>Logout</button>
+           
             </div>
             <div className="w-full h-full flex flex-col">
-                 <button className="btn btn-outline fixed top-0 right-0 mt-2 mx-12" onClick={()=>setShowCart(!showCart)}>Cart</button>
             {showCart && <Cart/>}
             <div className=" grid grid-cols-3 justify-evenly w-max">
                 {products.map((product) => (

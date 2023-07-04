@@ -19,6 +19,7 @@ interface StateContextProps {
   showCart: boolean;
   setShowCart: React.Dispatch<React.SetStateAction<boolean>>;
   cartItems: Product[];
+  setCartItems: React.Dispatch<React.SetStateAction<Product[]>>;
   totalPrice: number;
   totalQuantities: number;
   qty: number;
@@ -27,8 +28,6 @@ interface StateContextProps {
   onAdd: (product: Product, quantity: number) => void;
   deleteProduct: (product: Product) => void;
   toggleCartItemQuantity: (id: string, values: "inc" | "dec") => void;
-  token: string;
-  setToken: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const Context = createContext<StateContextProps | undefined>(undefined);
@@ -43,7 +42,8 @@ export const StateContext = ({ children }: StateContextProviderProps) => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [totalQuantities, setTotalQuantities] = useState<number>(0);
   const [qty, setQty] = useState<number>(1);
-  const [token, setToken] = useState<string>("");
+
+
   let foundProduct: Product | undefined;
   let index: number;
 
@@ -137,8 +137,7 @@ export const StateContext = ({ children }: StateContextProviderProps) => {
         onAdd,
         deleteProduct,
         toggleCartItemQuantity,
-        token,
-        setToken,
+        setCartItems,
       }}
     >
       {children}

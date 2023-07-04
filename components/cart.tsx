@@ -9,19 +9,18 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { useStateContext } from "../context/StateContext";
 import { useRef } from "react";
 import { toast } from "react-hot-toast";
-import jwt from "jsonwebtoken";
 import { useRouter } from "next/router";
+
 interface Token {
   username: string;
   iat: number;
   exp: number;
 }
+import Cookies from "js-cookie";
+import { User } from "@/hooks/useLogin";
 export default function Cart() {
-  useEffect(() => {
-    if (!token) {
-      router.push("/");
-    }
-  }, []);
+
+  
   const router = useRouter();
   const cartRef = useRef<HTMLDivElement | null>(null);
   const {
@@ -34,17 +33,18 @@ export default function Cart() {
     qty,
     deleteProduct,
     toggleCartItemQuantity,
-    token,
+    setCartItems,
+    
   } = useStateContext();
 
   const handleCheckout = async (e: any) => {
     e.preventDefault();
+      var temp = Cookies.get("currentUser");
+      temp = temp?.substring(1, temp.length - 1);
+      const currUser = JSON.parse(temp as string) as User;
+      const token = currUser.accessToken;
     
-    const temp = JSON.stringify({
-      user: token,
-      cartItems: cartItems,
-    })
-    console.log(temp);
+  
     const response = await fetch(
       process.env.NEXT_PUBLIC_API_URL + "/orders/add-order",
       {
@@ -55,9 +55,20 @@ export default function Cart() {
           cartItems: cartItems,
         }),
       }
-    );
-
-    console.log(response);
+    ).then((res) => res.json())
+    .then((data)=>{
+      if (data.statusCode == 200){
+        toast.success("Order placed successfully");
+        setCartItems([]);
+        setShowCart(false);
+        router.push("/orders");
+      } else{
+        toast.error("Error: Unable to place order:1");
+      }
+    })
+    .catch((err)=>{
+      toast.error("Error: Unable to place order");
+    })
   };
   return (
     <div

@@ -2,11 +2,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";
-
+import { useRegister } from "@/hooks/useRegister";
 export default function Home(){
     const router = useRouter();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const {register} = useRegister();
     const handleSubmit = async (e: any) => {
       e.preventDefault();
   
@@ -17,23 +18,7 @@ export default function Home(){
         return;
       }
       try {
-        const res = await fetch(
-          process.env.NEXT_PUBLIC_API_URL + "/users/register",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, password }),
-          }
-        );
-        const data = await res.json();
-        if (res.ok && data.body) {
-          router.push("/");
-        } else {
-          //I coudlnt figure out how to get CORS to work with custom HTTP codes...
-          toast.error("Something went wrong!");
-        }
+      register(username,password);
       } catch (err) {
         console.log(err);
       }

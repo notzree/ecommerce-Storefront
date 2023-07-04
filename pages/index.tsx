@@ -6,12 +6,14 @@ import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";
 import jwt from "jsonwebtoken";
 import { useStateContext } from "@/context/StateContext";
+import { useLogin } from "@/hooks/useLogin";
 declare const window: any;
 export default function Home() {
-  const { setToken } = useStateContext();
+
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const {login} = useLogin();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -23,24 +25,7 @@ export default function Home() {
       return;
     }
     try {
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + "/users/sign-in",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-        }
-      );
-      const data = await res.json();
-      if (res.ok && data.body) {
-        setToken(data.body);
-        router.push("/store");
-      } else {
-        //I coudlnt figure out how to get CORS to work with custom HTTP codes...
-        toast.error("Already Registered");
-      }
+      login(username,password);
     } catch (err) {
       console.log(err);
     }
