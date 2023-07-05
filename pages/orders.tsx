@@ -43,10 +43,12 @@ export default function Order() {
             <Link href = "/store" className="btn btn-outline">Store</Link>
             {
                 orders?.map((order)=>{
+                  console.log(order);
                     return(
                         <div key = {order.orderId} className="card w-96 bg-base-100 shadow-xl m-5">
                             <div className="card-body">
                                 <h2 className="card-title w-auto">Order ID: {order.orderId["S"]}</h2>
+                                <p>Price: {order.totalPrice["N"]}</p>
                             </div>
                         </div>
                     )
