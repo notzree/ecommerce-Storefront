@@ -1,6 +1,6 @@
 
 # About
- This is the Repo for a Technical take-home assessment tasked to create a fullstack, functional e-commerce application. You can visit it here: [APPLICATION LINK](https://main.d2uire0dhku2fz.amplifyapp.com/)
+ This is the Repo for a Technical take-home assessment tasked to create a fullstack, functional e-commerce application. You can visit it here: ~[APPLICATION LINK](https://main.d2uire0dhku2fz.amplifyapp.com/)~ TAKEN DOWN BC AWS WAS BIILLING ME SO MUCH
 
 # The application:
 Click here for rough architecture diagram: [Excalidraw link](https://excalidraw.com/#room=aa5027f257348b5297c2,MhH1YDqNhUHEkzXLI3eqQA)
